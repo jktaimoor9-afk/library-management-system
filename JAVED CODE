@@ -1,0 +1,121 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Book {
+    int id;
+    string title;
+    string author;
+    bool borrowed;
+};
+
+struct Student {
+    string name, cms, status;
+};
+
+Book books[5] = {
+    {101,"C++","Bjarne",false},
+    {102,"DSA","Lipschutz",false},
+    {103,"Algorithms","Sedgewick",false},
+    {104,"Networks","Tanenbaum",false},
+    {105,"OS","Silberschatz",false}
+};
+
+Student students[5] = {
+    {"Ali","CMS001","Good"},
+    {"Sara","CMS002","Good"},
+    {"Bilal","CMS003","Good"},
+    {"Ayesha","CMS004","Good"},
+    {"Hassan","CMS005","Good"}
+};
+
+string adminPass = "1234";
+
+void showBooks() {
+    cout << "\n--- Books ---\n";
+    for(int i=0;i<5;i++)
+        cout << books[i].id << "  " << books[i].title 
+             << "  " << (books[i].borrowed?"Borrowed":"Available") << endl;
+}
+
+void showStudents() {
+    cout << "\n--- Students ---\n";
+    for(int i=0;i<5;i++)
+        cout << students[i].name << "  " << students[i].cms 
+             << "  " << students[i].status << endl;
+}
+
+void borrowBook() {
+    int id; 
+    cout << "Enter Book ID: ";
+    cin >> id;
+    for(int i=0;i<5;i++){
+        if(books[i].id==id){
+            if(books[i].borrowed) cout<<"Already Borrowed!\n";
+            else { books[i].borrowed=true; cout<<"Borrowed Successfully!\n"; }
+            return;
+        }
+    }
+    cout<<"Book Not Found!\n";
+}
+
+bool adminLogin(){
+    string p; 
+    cout<<"Enter Admin Password: ";
+    cin>>p;
+    return p==adminPass;
+}
+
+void adminMenu(){
+    int c;
+    do{
+        cout<<"\n1. Show Books\n2. Show Students\n3. Exit\nChoice: ";
+        cin>>c;
+        if(c==1) showBooks();
+        else if(c==2) showStudents();
+    } while(c!=3);
+}
+
+void studentMenu(Student s){
+    int c;
+    do{
+        cout<<"\n1. My Record\n2. Borrow Book\n3. Exit\nChoice: ";
+        cin>>c;
+        if(c==1) 
+            cout<<s.name<<"  "<<s.cms<<"  "<<s.status<<endl;
+        else if(c==2) borrowBook();
+    } while(c!=3);
+}
+
+int main(){
+    int ch;
+    do{
+        cout<<"\n1. Admin Login\n2. Student Entry\n3. Exit\nChoice: ";
+        cin>>ch;
+
+        if(ch==1){
+            if(adminLogin()) adminMenu();
+            else cout<<"Wrong Password!\n";
+        }
+        else if(ch==2){
+            cin.ignore();
+            Student s;
+            cout<<"Enter Name: "; getline(cin, s.name);
+            cout<<"Enter CMS: "; getline(cin, s.cms);
+
+            bool found=false;
+            for(int i=0;i<5;i++){
+                if(students[i].name==s.name && students[i].cms==s.cms){
+                    s.status = students[i].status;
+                    found=true;
+                    break;
+                }
+            }
+            if(!found) { cout<<"Student Not Found!\n"; continue; }
+            studentMenu(s);
+        }
+
+    } while(ch!=3);
+
+    cout<<"\nThank You!\n";
+}
